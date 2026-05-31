@@ -1,28 +1,27 @@
 # t831_c.py
-import numpy as np
 
-def calculate_determinant(n):
-    if n <= 0:
-        return 0
-    matrix = np.zeros((n, n))
+def determinant_generator(n):
+    if n >= 1:
+        d_minus_2 = 1
+        d_minus_1 = 2
+        yield d_minus_1
 
-    for i in range(n):
-        matrix[i, i] = 2
-        if i < n - 1:
-            matrix[i, i + 1] = 3
-        if i > 0:
-            matrix[i - 1, i] = 1
+        if n >= 2:
+            d_current = 2 * d_minus_1 - 3 * d_minus_2
+            yield d_current
 
-    det = np.linalg.det(matrix)
-    return round(det)
+            for _ in range(3, n + 1):
+                d_minus_2 = d_minus_1
+                d_minus_1 = d_current
+                d_current = 2 * d_minus_1 - 3 * d_minus_2
+                yield d_current
+
 
 if __name__ == "__main__":
-    try:
-        n = int(input("Введіть порядок матриці n: "))
-        if n < 1:
-            print("Порядок матриці має бути >= 1")
-        else:
-            result = calculate_determinant(n)
-            print(f"Визначник матриці порядку {n} дорівнює: {result}")
-    except ValueError:
-        print("Помилка: введіть ціле число.")
+    n = int(input("Введіть порядок matrix n: "))
+    if n >= 1:
+        gen = determinant_generator(n)
+        result = None
+        for det in gen:
+            result = det
+        print(f"Визначник матриці порядку {n} дорівнює: {result}")
