@@ -1,30 +1,30 @@
 # t831_d.py
 
-def get_a_sequence(n):
-    a = [0] * (max(n, 2) + 1)
-    a[1] = 0
-    a[2] = 1
-    for k in range(3, n + 1):
-        a[k] = a[k - 1] + k * a[k - 2]
-    return a
 
-def calculate_sum_sn(n):
-    if n < 1:
-        return 0
+def sum_sn_generator(n):
+    a1, a2 = 0, 1
+    total_sum = 0.0
 
-    a = get_a_sequence(n)
-    total_sum = 0
-    for k in range(1, n + 1):
-        total_sum += (2**k) * a[k]
-    return total_sum
+    total_sum += (2**1) * a1
+    yield total_sum
+
+    if n >= 2:
+        total_sum += (2**2) * a2
+        yield total_sum
+
+        for k in range(3, n + 1):
+            ak = a2 + k * a1
+            total_sum += (2**k) * ak
+            yield total_sum
+            a1 = a2
+            a2 = ak
+
 
 if __name__ == "__main__":
-    try:
-        n = int(input("Введіть значення n: "))
-        if n < 1:
-            print("n повинно бути >= 1")
-        else:
-            result = calculate_sum_sn(n)
-            print(f"Сума S_{n} = {result}")
-    except ValueError:
-        print("Помилка: введіть ціле число.")
+    n = int(input("Введіть значення n: "))
+    if n >= 1:
+        gen = sum_sn_generator(n)
+        result = None
+        for current_sum in gen:
+            result = current_sum
+        print(f"Сума S_{n} = {result}")
